@@ -4,3 +4,22 @@ metricbeat_major_version: 7
 
 # Enable Metricbeat starting on boot
 metricbeat_enable_on_boot: true
+
+# Kibana host
+kibana_host: "localhost:5601"
+
+# Kibana Space ID
+kibana_space_id: ""
+
+# Elasticsearch output configuration
+elasticsearch_output_enabled: true
+elasticsearch_hosts: ['localhost:9200']
+elasticsearch_protocol:
+elasticsearch_username:
+elasticsearch_password:
+
+# Logstash output configuration
+logstash_output_enabled: false
+logstash_certificate_authorities:
+logstash_ssl_certificate_path:
+logstash_ssl_key_path:
