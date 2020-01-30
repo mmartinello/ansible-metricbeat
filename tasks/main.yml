@@ -1,2 +1,4 @@
 ---
-# tasks file for mmartinello.metricbeat
+# Install
+- include_tasks: install.yml
+  tags: ['always']

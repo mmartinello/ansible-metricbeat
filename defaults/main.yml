@@ -1,2 +1,3 @@
 ---
-# defaults file for mmartinello.metricbeat
+# Metricbeat major version to be installed
+major_version: 7
