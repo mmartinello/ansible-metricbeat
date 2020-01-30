@@ -6,3 +6,7 @@
 # Configure
 - import_tasks: configure.yml
   tags: ['configure']
+
+# Configure Modules
+- import_tasks: configure-modules.yml
+  tags: ['configure', 'modules']

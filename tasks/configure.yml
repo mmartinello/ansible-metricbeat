@@ -2,4 +2,4 @@
 - name: Configure Metricbeat
   template:
     src: templates/metricbeat.yml.j2
-    dest: /etc/metricbeat/metricbeat.yml
+    dest: "{{ metricbeat_conf_path }}/metricbeat.yml"
