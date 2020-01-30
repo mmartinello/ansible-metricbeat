@@ -11,7 +11,7 @@
 
 - name: Add Elastic APT Repository
   apt_repository:
-    repo: 'deb https://artifacts.elastic.co/packages/{{ major_version }}.x/apt stable main'
+    repo: 'deb https://artifacts.elastic.co/packages/{{ metricbeat_major_version }}.x/apt stable main'
     filename: elastic
     state: present
     update_cache: true
