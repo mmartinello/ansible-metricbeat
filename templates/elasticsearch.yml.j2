@@ -1,0 +1,35 @@
+# Module: elasticsearch
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.5/metricbeat-module-elasticsearch.html
+{% set module_name = "elasticsearch" %}
+
+{% if metricbeat_modules[module_name].enabled == true %}
+{% for config in metricbeat_modules[module_name].config %}
+- module: {{ module_name }}
+  period: {{ config.period }}
+{# Metricsets #}
+  metricsets:
+{% for metricset in config.metricsets %}
+    - {{ metricset }}
+{# Hosts #}
+  hosts:
+{% for host in config.hosts %}
+    - {{ hosts }}
+{% endfor %}
+{# Username #}
+{% if config.username is defined %}
+  username: {{ config.username }}
+{% endif %}
+{# Password #}
+{% if config.password is defined %}
+  password: {{ config.password }}
+{% endif %}
+{% endif %}
+
+- module: elasticsearch
+  #metricsets:
+  #  - node
+  #  - node_stats
+  period: 10s
+  hosts: ["http://localhost:9200"]
+  #username: "user"
+  #password: "secret"
