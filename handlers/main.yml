@@ -3,8 +3,3 @@
   service:
     name: metricbeat
     state: restarted
-
-- name: Reload Metricbeat
-  service:
-    name: metricbeat
-    state: reloaded
