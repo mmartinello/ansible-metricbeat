@@ -62,6 +62,7 @@ metricbeat_modules:
 # Metricbeat modules definition (don't change!)
 metricbeat_supported_modules:
   - system
+  - elasticsearch
 
 # Setup index and dashboards
 metricbeat_setup_index: false

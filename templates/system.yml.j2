@@ -9,7 +9,7 @@
 {# Metricsets #}
   metricsets:
 {% for metricset in config.metricsets %}
-  - {{ metricset }}
+    - {{ metricset }}
 {% endfor %}
 {# Processors #}
 {% if config.processors is defined %}
