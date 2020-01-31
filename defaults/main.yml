@@ -62,3 +62,7 @@ metricbeat_modules:
 # Metricbeat modules definition (don't change!)
 metricbeat_supported_modules:
   - system
+
+# Setup index and dashboards
+metricbeat_setup_index: false
+metricbeat_setup_dashboards: false
