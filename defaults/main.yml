@@ -67,11 +67,21 @@ metricbeat_modules:
         - node_stats
       hosts:
         - "http://127.0.0.1:9200"
+  redis:
+    enabled: false
+    config:
+    - perdiod: 10s
+      metricsets:
+        - info
+        - keyspace
+      hosts:
+        - "127.0.0.1:6379"
 
 # Metricbeat modules definition (don't change!)
 metricbeat_supported_modules:
-  - system
   - elasticsearch
+  - redis
+  - system
 
 # Setup index and dashboards
 metricbeat_setup_index: false
