@@ -58,6 +58,15 @@ metricbeat_modules:
     - period: 15m
       metricsets:
         - uptime
+  elasticsearch:
+    enabled: false
+    config:
+    - period: 10s
+      metricsets:
+        - node
+        - node_stats
+      hosts:
+        - "http://127.0.0.1:9200"
 
 # Metricbeat modules definition (don't change!)
 metricbeat_supported_modules:

@@ -10,10 +10,11 @@
   metricsets:
 {% for metricset in config.metricsets %}
     - {{ metricset }}
+{% endfor %}
 {# Hosts #}
   hosts:
 {% for host in config.hosts %}
-    - {{ hosts }}
+    - {{ host }}
 {% endfor %}
 {# Username #}
 {% if config.username is defined %}
@@ -23,13 +24,6 @@
 {% if config.password is defined %}
   password: {{ config.password }}
 {% endif %}
-{% endif %}
 
-- module: elasticsearch
-  #metricsets:
-  #  - node
-  #  - node_stats
-  period: 10s
-  hosts: ["http://localhost:9200"]
-  #username: "user"
-  #password: "secret"
+{% endfor %}
+{% endif %}
