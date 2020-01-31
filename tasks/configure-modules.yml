@@ -1,10 +1,11 @@
 ---
-#- name: Disable disabled Metricbeat modules
-#  file:
-#    path: "{{ metricbeat_modules_path }}/{{ item }}.yml"
-#    state: absent
-#  loop: "{{ metricbeat_supported_modules }}"
-#  when: item not in metricbeat_modules or (item in metricbeat_modules and metricbeat_modules[item].enabled != true)
+- name: Disable disabled Metricbeat modules
+  file:
+    path: "{{ metricbeat_modules_path }}/{{ item }}.yml"
+    state: absent
+  loop: "{{ metricbeat_supported_modules }}"
+  when: item not in metricbeat_modules or (item in metricbeat_modules and metricbeat_modules[item].enabled != true)
+  notify: Reload Metricbeat
 
 - name: Enable and configure enabled Metricbeat modules
   template:
@@ -12,3 +13,4 @@
     dest: "{{ metricbeat_modules_path }}/{{ item }}.yml"
   loop: "{{ metricbeat_supported_modules }}"
   when: item in metricbeat_modules and (metricbeat_modules[item].enabled is undefined or metricbeat_modules[item].enabled == true)
+  notify: Reload Metricbeat

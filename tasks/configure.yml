@@ -3,3 +3,4 @@
   template:
     src: templates/metricbeat.yml.j2
     dest: "{{ metricbeat_conf_path }}/metricbeat.yml"
+  notify: Reload Metricbeat

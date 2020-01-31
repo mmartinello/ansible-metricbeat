@@ -1,2 +1,10 @@
 ---
-# handlers file for mmartinello.metricbeat
+- name: Restart Metricbeat
+  service:
+    name: metricbeat
+    state: restarted
+
+- name: Reload Metricbeat
+  service:
+    name: metricbeat
+    state: reloaded
