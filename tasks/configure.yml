@@ -3,7 +3,7 @@
   template:
     src: templates/metricbeat.yml.j2
     dest: "{{ metricbeat_conf_path }}/metricbeat.yml"
-  notify: Reload Metricbeat
+  notify: Restart Metricbeat
 
 - name: Setup Index and other Elasticsearch stuff
   shell:
