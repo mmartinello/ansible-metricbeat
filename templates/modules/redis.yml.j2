@@ -1,0 +1,31 @@
+# Module: redis
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.5/metricbeat-module-redis.html
+{% set module_name = "redis" %}
+
+{% for config in module_config %}
+- module: {{ module_name }}
+  period: {{ config.period }}
+{# Metricsets #}
+  metricsets:
+{% for metricset in config.metricsets %}
+    - {{ metricset }}
+{% endfor %}
+{# Hosts #}
+  hosts:
+{% for host in config.hosts %}
+    - {{ host }}
+{% endfor %}
+{# Network #}
+{% if config.network is defined %}
+  network: {{ config.network }}
+{% endif %}
+{# Maxconn #}
+{% if config.maxconn is defined %}
+  maxconn: {{ config.maxconn }}
+{% endif %}
+{# Password #}
+{% if config.password is defined %}
+  password: {{ config.password }}
+{% endif %}
+
+{% endfor %}

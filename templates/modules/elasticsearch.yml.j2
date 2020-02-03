@@ -2,8 +2,7 @@
 # Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.5/metricbeat-module-elasticsearch.html
 {% set module_name = "elasticsearch" %}
 
-{% if metricbeat_modules[module_name].enabled == true %}
-{% for config in metricbeat_modules[module_name].config %}
+{% for config in module_config %}
 - module: {{ module_name }}
   period: {{ config.period }}
 {# Metricsets #}
@@ -26,4 +25,3 @@
 {% endif %}
 
 {% endfor %}
-{% endif %}
