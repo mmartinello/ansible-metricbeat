@@ -19,9 +19,6 @@
   loop: "{{ metricbeat_supported_modules }}"
   when: lookup('vars', 'metricbeat_module_' + item).enabled == true and lookup('vars', 'metricbeat_module_' + item).config is not defined
 
-- debug:
-    msg: "{{ metricbeat_modules_config }}"
-
 - name: Enable and configure enabled Metricbeat modules
   template:
     src: "templates/modules/{{ item }}.yml.j2"
