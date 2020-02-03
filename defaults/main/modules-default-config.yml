@@ -4,6 +4,28 @@ metricbeat_modules_config: {}
 
 # Modules default configuration
 metricbeat_modules_default_config:
+  elasticsearch:
+    - period: 10s
+      metricsets:
+        - node
+        - node_stats
+      hosts:
+        - "http://127.0.0.1:9200"
+  postgresql:
+    - period: 10s
+      metricsets:
+        - database
+        - bgwriter
+        - activity
+      hosts:
+        - "postgres://localhost:5432"
+  redis:
+    - perdiod: 10s
+      metricsets:
+        - info
+        - keyspace
+      hosts:
+        - "127.0.0.1:6379"
   system:
     - period: 10s
       metricsets:
@@ -30,25 +52,10 @@ metricbeat_modules_default_config:
     - period: 15m
       metricsets:
         - uptime
-  elasticsearch:
-    - period: 10s
-      metricsets:
-        - node
-        - node_stats
-      hosts:
-        - "http://127.0.0.1:9200"
-  redis:
-    enabled: false
-    config:
-    - perdiod: 10s
-      metricsets:
-        - info
-        - keyspace
-      hosts:
-        - "127.0.0.1:6379"
 
 # Supported modules by this role
 metricbeat_supported_modules:
   - elasticsearch
+  - postgresql
   - redis
   - system

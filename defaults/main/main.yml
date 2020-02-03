@@ -40,5 +40,8 @@ metricbeat_module_system:
 metricbeat_module_elasticsearch:
   enabled: false
 
+metricbeat_module_postgresql:
+  enabled: false
+
 metricbeat_module_redis:
   enabled: false
