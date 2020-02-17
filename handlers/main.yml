@@ -3,3 +3,8 @@
   service:
     name: metricbeat
     state: restarted
+
+- name: Restart Metricbeat on Windows
+  win_service:
+    name: metricbeat
+    state: restarted

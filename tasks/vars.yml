@@ -1,0 +1,10 @@
+---
+- name: Set Windows serice start mode if enabled on boot
+  set_fact:
+    _metricbeat_win_start_mode: auto
+  when: ansible_os_family == "Windows" and metricbeat_enable_on_boot == true
+
+- name: Set Windows serice start mode if not enabled on boot
+  set_fact:
+    _metricbeat_win_start_mode: manual
+  when: ansible_os_family == "Windows" and metricbeat_enable_on_boot == false

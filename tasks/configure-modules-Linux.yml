@@ -1,0 +1,18 @@
+---
+- name: Disable disabled Metricbeat modules
+  file:
+    path: "{{ metricbeat_modules_path }}/{{ item }}.yml"
+    state: absent
+  loop: "{{ metricbeat_supported_modules }}"
+  when: lookup('vars', 'metricbeat_module_' + item).enabled != true
+  notify: Restart Metricbeat
+
+- name: Enable and configure enabled Metricbeat modules
+  template:
+    src: "templates/modules/{{ item }}.yml.j2"
+    dest: "{{ metricbeat_modules_path }}/{{ item }}.yml"
+  vars:
+    module_config: "{{ metricbeat_modules_config[item] }}"
+  loop: "{{ metricbeat_supported_modules }}"
+  when: lookup('vars', 'metricbeat_module_' + item).enabled == true
+  notify: Restart Metricbeat

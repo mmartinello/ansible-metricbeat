@@ -5,8 +5,5 @@
 - include_tasks: install-Redhat.yml
   when: ansible_os_family == "Redhat"
 
-- name: Ensure Metricbeat is started and enabled on boot
-  service:
-    name: metricbeat
-    state: started
-    enabled: "{{ metricbeat_enable_on_boot }}"
+- include_tasks: install-Windows.yml
+  when: ansible_os_family == "Windows"

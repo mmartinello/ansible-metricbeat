@@ -1,0 +1,16 @@
+---
+- name: Configure Metricbeat
+  win_template:
+    src: templates/metricbeat.yml.j2
+    dest: "{{ metricbeat_win_conf_path }}/metricbeat.yml"
+  notify: Restart Metricbeat on Windows
+
+- name: Setup Index and other Elasticsearch stuff
+  win_shell:
+    cmd: metricbeat setup --index-management
+  when: metricbeat_setup_index == true
+
+- name: Setup Kibana Dashboards
+  win_shell:
+    cmd: metricbeat setup --dashboards
+  when: metricbeat_setup_dashboards == true

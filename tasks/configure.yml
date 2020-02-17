@@ -1,16 +1,6 @@
 ---
-- name: Configure Metricbeat
-  template:
-    src: templates/metricbeat.yml.j2
-    dest: "{{ metricbeat_conf_path }}/metricbeat.yml"
-  notify: Restart Metricbeat
+- import_tasks: configure-Linux.yml
+  when: ansible_system == "Linux"
 
-- name: Setup Index and other Elasticsearch stuff
-  shell:
-    cmd: metricbeat setup --index-management
-  when: metricbeat_setup_index == true
-
-- name: Setup Kibana Dashboards
-  shell:
-    cmd: metricbeat setup --dashboards
-  when: metricbeat_setup_dashboards == true
+- import_tasks: configure-Windows.yml
+  when: ansible_os_family == "Windows"

@@ -1,4 +1,8 @@
 ---
+# Variables
+- import_tasks: vars.yml
+  tags: ['always']
+
 # Install
 - import_tasks: install.yml
   tags: ['install']
@@ -10,3 +14,18 @@
 # Configure Modules
 - import_tasks: configure-modules.yml
   tags: ['configure', 'modules']
+
+# Service startup
+- name: Ensure Metricbeat is started and enabled on boot
+  service:
+    name: metricbeat
+    state: started
+    enabled: "{{ metricbeat_enable_on_boot }}"
+  when: ansible_system == "Linux"
+
+- name: Ensure Metricbeat is started and enabled on boot.
+  win_service:
+    name: metricbeat
+    state: started
+    start_mode: "{{ _metricbeat_win_start_mode }}"
+  when: ansible_os_family == "Windows"

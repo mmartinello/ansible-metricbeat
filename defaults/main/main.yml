@@ -2,12 +2,19 @@
 # Metricbeat major version to be installed
 metricbeat_major_version: 7
 
+# Windows variables
+metricbeat_win_msi_64bit: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.6.0-windows-x86_64.msi
+metricbeat_win_msi_32bit: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.6.0-windows-x86.msi
+metricbeat_win_package_product_id: 493322A2-BB80-5176-867D-9F6AF69D1E2B
+
 # Enable Metricbeat starting on boot
 metricbeat_enable_on_boot: true
 
 # Path configuration
 metricbeat_conf_path: /etc/metricbeat
 metricbeat_modules_path: /etc/metricbeat/modules.d
+metricbeat_win_conf_path: C:\ProgramData\Elastic\Beats\metricbeat
+metricbeat_win_modules_path: C:\ProgramData\Elastic\Beats\metricbeat\modules.d
 
 # Kibana host
 kibana_host: "localhost:5601"

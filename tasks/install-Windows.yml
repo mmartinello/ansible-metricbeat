@@ -1,0 +1,16 @@
+---
+- set_fact:
+    package_url: "{{ metricbeat_win_msi_64bit }}"
+  when: ansible_architecture == "64-bit"
+ 
+# FIXME: check if OS really is 32 bit 
+- set_fact:
+    package_url: "{{ metricbeat_win_msi_32bit }}"
+  when: ansible_architecture != "64-bit"
+
+- name: Install Metricbeat
+  win_package:
+    path: "{{ package_url }}"
+    product_id: "{{ metricbeat_win_package_product_id }} "
+    arguments: /qn /norestart
+  notify: Restart Metricbeat on Windows
