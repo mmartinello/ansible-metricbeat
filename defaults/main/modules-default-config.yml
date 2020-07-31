@@ -50,7 +50,7 @@ metricbeat_modules_default_config:
       hosts:
         - "postgres://localhost:5432"
   redis:
-    - perdiod: 10s
+    - period: 10s
       metricsets:
         - info
         - keyspace
