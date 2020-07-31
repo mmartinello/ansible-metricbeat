@@ -5,6 +5,7 @@ metricbeat_modules_config: {}
 # Supported modules by this role
 metricbeat_supported_modules:
   - elasticsearch
+  - mysql
   - postgresql
   - redis
   - system
@@ -18,6 +19,12 @@ metricbeat_modules_default_config:
         - node_stats
       hosts:
         - "http://127.0.0.1:9200"
+  mysql:
+    - period: 10s
+      metricsets:
+        - status
+      hosts:
+        - "root:secret@tcp(127.0.0.1:3306)/"
   postgresql:
     - period: 10s
       metricsets:
