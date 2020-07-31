@@ -1,0 +1,32 @@
+# Module: nginx
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.8/metricbeat-module-nginx.html
+
+{% set module_name = "nginx" %}
+
+{% for config in module_config %}
+- module: {{ module_name }}
+  period: {{ config.period }}
+{# Metricsets #}
+  metricsets:
+{% for metricset in config.metricsets %}
+    - {{ metricset }}
+{% endfor %}
+{# Hosts #}
+  hosts:
+{% for host in config.hosts %}
+    - {{ host }}
+{% endfor %}
+{# Path to server status. Default server-status #}
+{% if config.server_status_path is defined %}
+  server_status_path: {{ config.server_status_path }}
+{% endif %}
+{# Username #}
+{% if config.username is defined %}
+  username: {{ config.username }}
+{% endif %}
+{# Password #}
+{% if config.password is defined %}
+  password: {{ config.password }}
+{% endif %}
+
+{% endfor %}
