@@ -1,0 +1,32 @@
+# Module: php_fpm
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.8/metricbeat-module-php_fpm.html
+
+{% set module_name = "php_fpm" %}
+
+{% for config in module_config %}
+- module: {{ module_name }}
+  period: {{ config.period }}
+{# Metricsets #}
+  metricsets:
+{% for metricset in config.metricsets %}
+    - {{ metricset }}
+{% endfor %}
+{# Hosts #}
+  hosts:
+{% for host in config.hosts %}
+    - {{ host }}
+{% endfor %}
+{# Status path #}
+{% if config.status_path is defined %}
+  status_path: {{ config.status_path }}
+{% endif %}
+{# Username #}
+{% if config.username is defined %}
+  username: {{ config.username }}
+{% endif %}
+{# Password #}
+{% if config.password is defined %}
+  password: {{ config.password }}
+{% endif %}
+
+{% endfor %}

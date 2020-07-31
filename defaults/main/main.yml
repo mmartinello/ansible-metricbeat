@@ -53,6 +53,9 @@ metricbeat_module_nginx:
 metricbeat_module_mysql:
   enabled: false
 
+metricbeat_module_php_fpm:
+  enabled: false
+
 metricbeat_module_postgresql:
   enabled: false
 
