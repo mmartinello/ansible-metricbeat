@@ -39,7 +39,7 @@ metricbeat_modules_default_config:
         - pool
         - process
       hosts:
-        - localhost:8080"
+        - "localhost:8080"
       status_path: "/status"
   postgresql:
     - period: 10s
