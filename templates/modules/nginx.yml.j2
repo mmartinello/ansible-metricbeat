@@ -17,9 +17,7 @@
     - {{ host }}
 {% endfor %}
 {# Path to server status. Default server-status #}
-{% if config.server_status_path is defined %}
-  server_status_path: {{ config.server_status_path }}
-{% endif %}
+  server_status_path: {{ config.server_status_path | default("nginx_status" }}
 {# Username #}
 {% if config.username is defined %}
   username: {{ config.username }}
