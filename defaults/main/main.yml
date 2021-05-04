@@ -44,6 +44,9 @@ metricbeat_module_system:
   enabled: true
 
 # Other modules are disabled by default
+metricbeat_module_apache:
+  enabled: false
+
 metricbeat_module_elasticsearch:
   enabled: false
 
