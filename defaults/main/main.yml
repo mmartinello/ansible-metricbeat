@@ -53,6 +53,9 @@ metricbeat_module_elasticsearch:
 metricbeat_module_nginx:
   enabled: false
 
+metricbeat_module_mssql:
+  enabled: false
+
 metricbeat_module_mysql:
   enabled: false
 

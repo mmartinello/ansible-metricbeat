@@ -6,6 +6,7 @@ metricbeat_modules_config: {}
 metricbeat_supported_modules:
   - apache
   - elasticsearch
+  - mssql
   - mysql
   - nginx
   - php_fpm
@@ -33,6 +34,15 @@ metricbeat_modules_default_config:
         - stubstatus
       hosts:
         - "http://127.0.0.1"
+  mssql:
+    - period: 10s
+      metricsets:
+        - "transaction_log"
+        - "performance"
+      hosts:
+        - "sqlserver://localhost"
+      username: domain\username
+      password: verysecurepassword
   mysql:
     - period: 10s
       metricsets:
