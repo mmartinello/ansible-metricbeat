@@ -5,6 +5,7 @@ metricbeat_modules_config: {}
 # Supported modules by this role
 metricbeat_supported_modules:
   - apache
+  - docker
   - elasticsearch
   - mssql
   - mysql
