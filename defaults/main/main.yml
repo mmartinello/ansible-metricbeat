@@ -48,7 +48,10 @@ metricbeat_module_apache:
   enabled: false
 
 metricbeat_module_beat:
-  enabled_false
+  enabled: false
+
+metricbeat_module_ceph:
+  enabled: false
 
 metricbeat_module_docker:
   enabled: false
