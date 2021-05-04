@@ -4,6 +4,7 @@ metricbeat_modules_config: {}
 
 # Supported modules by this role
 metricbeat_supported_modules:
+  - apache
   - elasticsearch
   - mysql
   - nginx
@@ -14,6 +15,11 @@ metricbeat_supported_modules:
 
 # Modules default configuration
 metricbeat_modules_default_config:
+  apache:
+    - period: 10s
+      metricsets:
+        - status
+      server_status_path: server-status
   elasticsearch:
     - period: 10s
       metricsets:

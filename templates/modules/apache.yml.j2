@@ -1,0 +1,33 @@
+{{ ansible_managed | comment }}
+
+# Module: apache
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.x/metricbeat-module-apache.html
+{% set module_name = "apache" %}
+
+{% for config in module_config %}
+
+- module: {{ module_name }}
+  #metricsets:
+  #  - status
+  period: {{ config.period }}
+{# Metricsets #}
+  metricsets:
+{% for metricset in config.metricsets %}
+    - {{ metricset }}
+{% endfor %}
+{# Hosts #}
+  hosts:
+{% for host in config.hosts %}
+    - {{ host }}
+{% endfor %}
+{% if config.password is defined %}
+  username: {{ config.username }}
+{% endif %}
+{% if config.password is defined %}
+  password: {{ config.password }}
+{% endif %}
+{% if config.server_status_path is defined %}
+  server_status_path: {{ config.server_status_path }}
+{% endif %}
+
+{% endfor %}
