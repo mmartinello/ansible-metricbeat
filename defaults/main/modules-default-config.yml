@@ -21,6 +21,26 @@ metricbeat_modules_default_config:
       metricsets:
         - status
       server_status_path: server-status
+  docker:
+    - period: 10s
+      metricsets:
+        - container
+        - cpu
+        - diskio
+        - event
+        - healthcheck
+        - info
+        #- image
+        - memory
+        - network
+      hosts:
+        - "unix:///var/run/docker.sock"
+      labels_dedot: false
+      cpu_cores: true
+      #ssl:
+      #  certificate_authority: "/etc/pki/root/ca.pem"
+      #  certificate: "/etc/pki/client/cert.pem"
+      #  key: "/etc/pki/client/cert.key"
   elasticsearch:
     - period: 10s
       metricsets:

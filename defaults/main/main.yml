@@ -47,6 +47,9 @@ metricbeat_module_system:
 metricbeat_module_apache:
   enabled: false
 
+metricbeat_module_docker:
+  enabled: false
+
 metricbeat_module_elasticsearch:
   enabled: false
 
