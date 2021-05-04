@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+# Module: docker
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.x/metricbeat-module-beat.html
+{% set module_name = "beat" %}
+
+{% for config in module_config %}
+
+- module: {{ module_name }}
+  period: {{ config.period }}
+{# Metricsets #}
+  metricsets:
+{% for metricset in config.metricsets %}
+    - {{ metricset }}
+{% endfor %}
+{# Hosts #}
+  hosts:
+{% for host in config.hosts %}
+    - {{ host }}
+{% endfor %}
+
+{% endfor %}

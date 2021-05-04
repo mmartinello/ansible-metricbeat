@@ -1,0 +1,31 @@
+{{ ansible_managed | comment }}
+
+# Module: docker
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.x/metricbeat-module-docker.html
+{% set module_name = "docker" %}
+
+{% for config in module_config %}
+
+- module: {{ module_name }}
+  period: {{ config.period }}
+{# Metricsets #}
+  metricsets:
+{% for metricset in config.metricsets %}
+    - {{ metricset }}
+{% endfor %}
+{# Hosts #}
+  hosts:
+{% for host in config.hosts %}
+    - {{ host }}
+{% endfor %}
+{% if config.labels_dedot is defined %}
+  labels.dedot: {{ config.labels_dedot }}
+{% endif %}
+{% if config.cpu_cores is defined %}
+  cpu.cores: {{ config.cpu_cores }}
+{% endif %}
+{% if config.ssl is defined %}
+  ssl: {{ config.ssl }}
+{% endif %}
+
+{% endfor %}
