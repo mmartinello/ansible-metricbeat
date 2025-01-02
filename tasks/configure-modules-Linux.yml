@@ -1,19 +1,20 @@
 ---
 - name: Disable disabled Metricbeat modules
-  file:
+  ansible.builtin.file:
     path: "{{ metricbeat_modules_path }}/{{ item }}.yml"
     state: absent
   loop: "{{ metricbeat_supported_modules }}"
-  when: lookup('vars', 'metricbeat_module_' + item).enabled != true
+  when: not lookup('vars', 'metricbeat_module_' + item).enabled
   notify: Restart Metricbeat
 
 - name: Enable and configure enabled Metricbeat modules
-  template:
+  ansible.builtin.template:
     src: "templates/modules/module.yml.j2"
     dest: "{{ metricbeat_modules_path }}/{{ item }}.yml"
+    mode: '0644'
   vars:
     module_name: "{{ item }}"
     module_config: "{{ metricbeat_modules_config[item] }}"
   loop: "{{ metricbeat_supported_modules }}"
-  when: lookup('vars', 'metricbeat_module_' + item).enabled == true
+  when: lookup('vars', 'metricbeat_module_' + item).enabled
   notify: Restart Metricbeat

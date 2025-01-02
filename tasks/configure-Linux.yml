@@ -1,16 +1,19 @@
 ---
 - name: Configure Metricbeat
-  template:
+  ansible.builtin.template:
     src: templates/metricbeat.yml.j2
     dest: "{{ metricbeat_conf_path }}/metricbeat.yml"
+    mode: '0644'
   notify: Restart Metricbeat
 
 - name: Setup Index and other Elasticsearch stuff
-  shell:
+  ansible.builtin.command:
     cmd: metricbeat setup --index-management
-  when: metricbeat_setup_index == true
+  changed_when: false
+  when: metricbeat_setup_index
 
 - name: Setup Kibana Dashboards
-  shell:
+  ansible.builtin.command:
     cmd: metricbeat setup --dashboards
-  when: metricbeat_setup_dashboards == true
+  changed_when: false
+  when: metricbeat_setup_dashboards
