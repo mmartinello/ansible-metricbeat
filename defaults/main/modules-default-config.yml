@@ -30,6 +30,8 @@ metricbeat_modules_default_config:
         - state
       hosts:
         - http://localhost:5066
+  ceph:
+    
   docker:
     - period: 10s
       metricsets:
@@ -113,17 +115,16 @@ metricbeat_modules_default_config:
         - socket_summary
         - core
         - diskio
-      extra:
-        process.include_top_n:
-          by_cpu: 5
-          by_memory: 5
+      process.include_top_n:
+        by_cpu: 5
+        by_memory: 5
     - period: 1m
       metricsets:
         - filesystem
         - fsstat
       processors:
-      - drop_event.when.regexp:
-          system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'
+        - drop_event.when.regexp:
+            system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'
     - period: 15m
       metricsets:
         - uptime
@@ -142,17 +143,16 @@ metricbeat_additional_default_config:
         - socket_summary
         - core
         - diskio
-      extra:
-        process.include_top_n:
-          by_cpu: 5
-          by_memory: 5
+      process.include_top_n:
+        by_cpu: 5
+        by_memory: 5
     - period: 1m
       metricsets:
         - filesystem
         - fsstat
       processors:
-      - drop_event.when.regexp:
-          system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'
+        - drop_event.when.regexp:
+            system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'
     - period: 15m
       metricsets:
         - uptime
