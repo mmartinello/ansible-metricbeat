@@ -4,14 +4,26 @@
     name: apt-transport-https
     state: present
 
-- name: Add Elasticsearch APT Key
-  ansible.builtin.apt_key:
+- name: Download Elasticsearch GPG key
+  ansible.builtin.get_url:
     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    state: present
+    dest: /tmp/GPG-KEY-elasticsearch
+    mode: '0644'
+
+- name: Install Elasticsearch GPG key
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /tmp/GPG-KEY-elasticsearch
+  args:
+    creates: /usr/share/keyrings/elasticsearch-keyring.gpg
+
+- name: Remove Elasticsearch GPG key temporary file
+  ansible.builtin.file:
+    path: /tmp/GPG-KEY-elasticsearch
+    state: absent
 
 - name: Add Elastic APT Repository
-  ansible.builtin.add_repository:
-    repo: 'deb https://artifacts.elastic.co/packages/{{ metricbeat_major_version }}.x/apt stable main'
+  ansible.builtin.apt_repository:
+    repo: 'deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/{{ metricbeat_major_version }}.x/apt stable main'
     filename: elastic
     state: present
     update_cache: true
