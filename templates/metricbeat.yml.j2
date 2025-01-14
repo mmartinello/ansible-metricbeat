@@ -81,7 +81,6 @@ setup.kibana:
 output.elasticsearch:
 {% if elasticsearch_output_enabled is defined and elasticsearch_output_enabled == True %}
   hosts: [{% for host in elasticsearch_hosts %}'{{ host }}'{{ ", " if not loop.last else "" }}{% endfor %}]
-
 {% if elasticsearch_protocol is defined and elasticsearch_protocol != None %}
   protocol: {{ elasticsearch_protocol }}
 {% endif %}
@@ -161,3 +160,7 @@ processors:
 
 # This allows to enable 6.7 migration aliases
 #migration.6_to_7.enabled: true
+
+#====================== Index lifecycle management (ILM) ======================
+
+setup.ilm.check_exists: {{ metricbeat_setup_ilm_check_exists | default(true) }}

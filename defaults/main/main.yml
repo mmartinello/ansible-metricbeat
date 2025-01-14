@@ -39,6 +39,9 @@ logstash_ssl_key_path:
 metricbeat_setup_index: false
 metricbeat_setup_dashboards: false
 
+# Setup index lifecycle management (ILM)
+metricbeat_setup_ilm_check_exists: true
+
 # Enable system module by default
 metricbeat_module_system:
   enabled: true
