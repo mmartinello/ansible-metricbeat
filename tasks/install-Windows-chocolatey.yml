@@ -1,0 +1,16 @@
+---
+- name: Install Metricbeat using Chocolatey
+  chocolatey.chocolatey.win_chocolatey:
+    name: metricbeat-oss
+    version: "{{ metricbeat_win_chocolatey_version }}"
+  notify: Restart Metricbeat on Windows
+
+- name: Set Metricbeat variables
+  ansible.builtin.set_fact:
+    metricbeat_win_conf_path: "C:/Program\ Files/Elastic/Beats/{{ metricbeat_win_chocolatey_version }}/metricbeat"
+    metricbeat_win_modules_path: "C:/Program\ Files/Elastic/Beats/{{ metricbeat_win_chocolatey_version }}/metricbeat/modules.d"
+
+- name: Install Metricbeat service
+  ansible.windows.win_shell: "install-service-metricbeat.ps1"
+  args:
+    chdir: "{{ metricbeat_win_conf_path }}"
