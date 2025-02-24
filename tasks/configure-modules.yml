@@ -15,7 +15,7 @@
   loop: "{{ metricbeat_supported_modules }}"
   when: lookup('vars', 'metricbeat_module_' + item).enabled and lookup('vars', 'metricbeat_module_' + item).config is defined
 
-- name: Set modules config from default variable if not configures
+- name: Set modules config from default variable if not configured
   ansible.builtin.set_fact:
     metricbeat_modules_config: "{{ metricbeat_modules_config | combine({item: metricbeat_modules_default_config[item]}) }}"
   loop: "{{ metricbeat_supported_modules }}"
