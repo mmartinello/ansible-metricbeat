@@ -7,10 +7,23 @@
 
 - name: Set Metricbeat variables
   ansible.builtin.set_fact:
-    metricbeat_win_conf_path: "C:/Program\ Files/Elastic/Beats/{{ metricbeat_win_chocolatey_version }}/metricbeat"
-    metricbeat_win_modules_path: "C:/Program\ Files/Elastic/Beats/{{ metricbeat_win_chocolatey_version }}/metricbeat/modules.d"
+    metricbeat_win_conf_path: "C:\\Program\ Files\\Elastic\\Beats\\{{ metricbeat_win_chocolatey_version }}\\metricbeat"
+    metricbeat_win_modules_path: "C:\\Program\ Files\\Elastic/Beats\\{{ metricbeat_win_chocolatey_version }}\\metricbeat/modules.d"
+
+- name: Debug metricbeat_win_conf_path
+  ansible.builtin.debug:
+    var: metricbeat_win_conf_path
+
+- name: Check if install-service-metricbeat.ps1 exists
+  ansible.windows.win_stat:
+    path: "{{ metricbeat_win_conf_path }}\\install-service-metricbeat.ps1"
+  register: metricbeat_script
+
+- name: Debug script existence
+  ansible.builtin.debug:
+    var: metricbeat_script
 
 - name: Install Metricbeat service
-  ansible.windows.win_shell: "install-service-metricbeat.ps1"
+  ansible.windows.win_shell: '"{{ metricbeat_win_conf_path }}\\install-service-metricbeat.ps1"'
   args:
-    chdir: "{{ metricbeat_win_conf_path }}"
+    #chdir: "{{ metricbeat_win_conf_path }}"
