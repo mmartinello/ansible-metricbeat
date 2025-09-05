@@ -1,32 +1,9 @@
 ---
-- name: Install dependencies
-  ansible.builtin.apt:
-    name: apt-transport-https
-    state: present
-
-- name: Download Elasticsearch GPG key
-  ansible.builtin.get_url:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    dest: /tmp/GPG-KEY-elasticsearch
-    mode: '0644'
-
-- name: Install Elasticsearch GPG key
-  ansible.builtin.command:
-    cmd: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /tmp/GPG-KEY-elasticsearch
-  args:
-    creates: /usr/share/keyrings/elasticsearch-keyring.gpg
-
-- name: Remove Elasticsearch GPG key temporary file
-  ansible.builtin.file:
-    path: /tmp/GPG-KEY-elasticsearch
-    state: absent
-
-- name: Add Elastic APT Repository
-  ansible.builtin.apt_repository:
-    repo: 'deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/{{ metricbeat_major_version }}.x/apt stable main'
-    filename: elastic
-    state: present
-    update_cache: true
+- name: Install Elasticsearch repository
+  ansible.builtin.include_role:
+    name: mmartinello.elastic
+  vars:
+    elastic_major_version: "{{ metricbeat_major_version }}"
 
 - name: Install Metricbeat
   ansible.builtin.apt:

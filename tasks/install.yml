@@ -1,12 +1,15 @@
 ---
 - name: Install on Debian
-  ansible.builtin.include_tasks: install-Debian.yml
-  when: ansible_os_family == "Debian"
-
-- name: Install on Redhat
-  ansible.builtin.include_tasks: install-Redhat.yml
-  when: ansible_os_family == "Redhat"
+  ansible.builtin.include_tasks: install-Repo.yml
+  when: ansible_os_family in ["Debian"]
 
 - name: Install on Windows
   ansible.builtin.include_tasks: install-Windows.yml
   when: ansible_os_family == "Windows"
+
+- name: Distribution not supported
+  ansible.builtin.fail:
+    msg: "Distribution not supported, exiting now!"
+  when:
+    - ansible_os_family != "Debian"
+    - ansible_os_family != "Windows"
