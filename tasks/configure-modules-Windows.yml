@@ -1,22 +1,22 @@
 ---
 - name: Disable disabled Metricbeat modules
   ansible.windows.win_file:
-    path: "{{ metricbeat_win_modules_path }}/{{ item }}.yml"
+    path: "{{ win_modules_path }}/{{ item }}.yml"
     state: absent
   loop: "{{ metricbeat_modules_disabled }}"
   notify: Restart Metricbeat on Windows
 
 - name: Enable enabled Metricbeat module
   ansible.windows.win_copy:
-    src: "{{ metricbeat_win_modules_path }}/{{ item }}.yml.disabled"
-    dest: "{{ metricbeat_win_modules_path }}/{{ item }}.yml"
+    src: "{{ win_modules_path }}/{{ item }}.yml.disabled"
+    dest: "{{ win_modules_path }}/{{ item }}.yml"
   loop: "{{ metricbeat_modules_enabled }}"
   notify: Restart Metricbeat on Windows
 
 - name: Configure modules with custom configuration
   ansible.windows.win_template:
     src: "templates/module.yml.j2"
-    dest: "{{ metricbeat_win_modules_path }}/{{ item }}.yml"
+    dest: "{{ win_modules_path }}/{{ item }}.yml"
   vars:
     module_name: "{{ item }}"
     module_config: "{{ metricbeat_modules_config[item] }}"
@@ -26,6 +26,6 @@
 - name: Enable the system module when not explicitly disabled
   ansible.windows.win_template:
     src: "templates/module-system.yml.j2"
-    dest: "{{ metricbeat_win_modules_path }}/system.yml"
+    dest: "{{ win_modules_path }}/system.yml"
   notify: Restart Metricbeat on Windows
   when: "'system' not in metricbeat_modules_disabled"

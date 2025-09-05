@@ -2,7 +2,7 @@
 - name: Configure Metricbeat on Windows
   ansible.windows.win_template:
     src: templates/metricbeat.yml.j2
-    dest: "{{ metricbeat_win_conf_path }}/metricbeat.yml"
+    dest: "{{ win_conf_path }}/metricbeat.yml"
   notify: Restart Metricbeat on Windows
 
 - name: Setup Index and other Elasticsearch stuff on Windows

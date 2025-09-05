@@ -2,17 +2,12 @@
 # Metricbeat major version to be installed
 metricbeat_major_version: 8
 
-# Metricbeat version to be installed with Chocolatey
-metricbeat_win_version: 8.14.1
-
 # Enable Metricbeat starting on boot
 metricbeat_enable_on_boot: true
 
-# Path configuration
+# Path configuration (Linux)
 metricbeat_conf_path: /etc/metricbeat
 metricbeat_modules_path: /etc/metricbeat/modules.d
-metricbeat_win_conf_path: C:\ProgramData\Elastic\Beats\metricbeat
-metricbeat_win_modules_path: C:\ProgramData\Elastic\Beats\metricbeat\modules.d
 
 # Kibana host
 metricbeat_kibana_host: "localhost:5601"
@@ -39,3 +34,14 @@ metricbeat_setup_dashboards: false
 
 # Setup index lifecycle management (ILM)
 metricbeat_setup_ilm_check_exists: true
+
+# Enabled modules (system is enabled by default if not explicitly disabled
+# in metricbeat_modules_disabled)
+metricbeat_modules_enabled: []
+
+# Disabled modules
+# (system is enabled by default if not explicitly disabled here)
+metricbeat_modules_disabled: []
+
+# Modules configuration
+metricbeat_modules_config: {}

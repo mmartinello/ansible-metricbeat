@@ -1,32 +1,56 @@
 ---
-- name: Install Metricbeat using Chocolatey
+- name: Set metricbeat package name
+  ansible.builtin.set_fact:
+    pkg_name: metricbeat-oss
+
+- name: Get all available versions from Chocolatey
+  ansible.windows.win_command: choco search {{ pkg_name }} --exact --all-versions --limit-output
+  register: choco_list
+  changed_when: false
+
+- name: Parse versions and pick latest major version {{ metricbeat_major_version }}
+  vars:
+    # Da "metricbeat-oss|8.13.4" → "8.13.4"
+    all_versions: "{{ choco_list.stdout_lines | map('regex_replace', '^.*\\|', '') | list }}"
+    # Tieni solo quelle della major richiesta (es. ^8\.)
+    major_regex: "^{{ metricbeat_major_version }}\\."
+    only_major: "{{ all_versions | select('search', major_regex) | list }}"
+  ansible.builtin.set_fact:
+    target_version: "{{ (only_major | community.general.version_sort) | last | default(omit) }}"
+
+- name: Fail if no versions were found under major version {{ metricbeat_major_version }}
+  ansible.builtin.fail:
+    msg: >-
+      No versions under major version {{ metricbeat_major_version }} of {{ pkg_name }} found on Chocolatey.
+      Output: {{ choco_list.stdout | default('') }}
+  when: target_version is not defined
+
+- name: Show target version
+  ansible.builtin.debug:
+    msg: "{{ pkg_name }} target version is {{ target_version }}, going to install it ..."
+
+- name: "Install Metricbeat using Chocolatey, version: {{ target_version }}"
   chocolatey.chocolatey.win_chocolatey:
-    name: metricbeat-oss
-    version: "{{ metricbeat_win_chocolatey_version }}"
+    name: "{{ pkg_name }}"
+    version: "{{ target_version }}"
   notify: Restart Metricbeat on Windows
 
-- name: Set Metricbeat variables
+- name: Set Metricbeat path variables
   ansible.builtin.set_fact:
-    metricbeat_win_conf_path: "C:\\Program\ Files\\Elastic\\Beats\\{{ metricbeat_win_chocolatey_version }}\\metricbeat"
-    metricbeat_win_modules_path: "C:\\Program\ Files\\Elastic/Beats\\{{ metricbeat_win_chocolatey_version }}\\metricbeat/modules.d"
+    win_conf_path: "C:\\Program\ Files\\Elastic\\Beats\\{{ target_version }}\\metricbeat"
+    win_modules_path: "C:\\Program\ Files\\Elastic/Beats\\{{ target_version }}\\metricbeat/modules.d"
 
-- name: Debug metricbeat_win_conf_path
+- name: Debug win_conf_path
   ansible.builtin.debug:
-    var: metricbeat_win_conf_path
+    var: win_conf_path
 
 - name: Check if install-service-metricbeat.ps1 exists
   ansible.windows.win_stat:
-    path: "{{ metricbeat_win_conf_path }}\\install-service-metricbeat.ps1"
+    path: "{{ win_conf_path }}\\install-service-metricbeat.ps1"
   register: metricbeat_script
 
-- name: Debug script existence
-  ansible.builtin.debug:
-    var: metricbeat_script
-
 - name: Install Metricbeat service
-  ansible.windows.win_shell: '"{{ metricbeat_win_conf_path }}\\install-service-metricbeat.ps1"'
-  args:
-    #chdir: "{{ metricbeat_win_conf_path }}"
+  ansible.windows.win_shell: '"{{ win_conf_path }}\\install-service-metricbeat.ps1"'
 
 - name: Ensure Metricbeat is started and enabled on boot.
   ansible.windows.win_service:

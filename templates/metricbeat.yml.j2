@@ -80,14 +80,14 @@ setup.kibana:
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
 {% if metricbeat_elasticsearch_output_enabled is defined and metricbeat_elasticsearch_output_enabled == True %}
-  hosts: [{% for host in elasticsearch_hosts %}'{{ host }}'{{ ", " if not loop.last else "" }}{% endfor %}]
+  hosts: [{% for host in metricbeat_elasticsearch_hosts %}'{{ host }}'{{ ", " if not loop.last else "" }}{% endfor %}]
 {% if metricbeat_elasticsearch_protocol is defined and metricbeat_elasticsearch_protocol != None %}
   protocol: {{ metricbeat_elasticsearch_protocol }}
 {% endif %}
 {% if metricbeat_elasticsearch_username is defined and metricbeat_elasticsearch_username != None %}
   username: {{ metricbeat_elasticsearch_username }}
 {% endif %}
-{% if elasticsearch_password is defined and elasticsearch_password != None %}
+{% if metricbeat_elasticsearch_password is defined and metricbeat_elasticsearch_password != None %}
   password: {{ metricbeat_elasticsearch_password }}
 {% endif %}
 {% else %}
@@ -101,7 +101,7 @@ output.logstash:
 
 
 {% if metricbeat_logstash_certificate_authorities is defined and metricbeat_logstash_certificate_authorities != None %}
-  ssl.certificate_authorities: metricbeat_logstash_certificate_authorities
+  ssl.certificate_authorities: {{ metricbeat_logstash_certificate_authorities | to_json }}
 {% endif %}
 {% if metricbeat_logstash_ssl_certificate_path is defined and metricbeat_logstash_ssl_certificate_path != None %}
   ssl.certificate: "{{ metricbeat_logstash_ssl_certificate_path }}"
