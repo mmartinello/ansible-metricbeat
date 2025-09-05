@@ -21,23 +21,23 @@ metricbeat_win_conf_path: C:\ProgramData\Elastic\Beats\metricbeat
 metricbeat_win_modules_path: C:\ProgramData\Elastic\Beats\metricbeat\modules.d
 
 # Kibana host
-kibana_host: "localhost:5601"
+metricbeat_kibana_host: "localhost:5601"
 
 # Kibana Space ID
-kibana_space_id: ""
+metricbeat_kibana_space_id: ""
 
 # Elasticsearch output configuration
-elasticsearch_output_enabled: true
-elasticsearch_hosts: ['localhost:9200']
-elasticsearch_protocol:
-elasticsearch_username:
-elasticsearch_password:
+metricbeat_elasticsearch_output_enabled: true
+metricbeat_elasticsearch_hosts: ['localhost:9200']
+metricbeat_elasticsearch_protocol:
+metricbeat_elasticsearch_username:
+metricbeat_elasticsearch_password:
 
 # Logstash output configuration
-logstash_output_enabled: false
-logstash_certificate_authorities:
-logstash_ssl_certificate_path:
-logstash_ssl_key_path:
+metricbeat_logstash_output_enabled: false
+metricbeat_logstash_certificate_authorities:
+metricbeat_logstash_ssl_certificate_path:
+metricbeat_logstash_ssl_key_path:
 
 # Setup index and dashboards
 metricbeat_setup_index: false
@@ -45,41 +45,3 @@ metricbeat_setup_dashboards: false
 
 # Setup index lifecycle management (ILM)
 metricbeat_setup_ilm_check_exists: true
-
-# Enable system module by default
-metricbeat_module_system:
-  enabled: true
-
-# Other modules are disabled by default
-metricbeat_module_apache:
-  enabled: false
-
-metricbeat_module_beat:
-  enabled: false
-
-metricbeat_module_ceph:
-  enabled: false
-
-metricbeat_module_docker:
-  enabled: false
-
-metricbeat_module_elasticsearch:
-  enabled: false
-
-metricbeat_module_nginx:
-  enabled: false
-
-metricbeat_module_mssql:
-  enabled: false
-
-metricbeat_module_mysql:
-  enabled: false
-
-metricbeat_module_php_fpm:
-  enabled: false
-
-metricbeat_module_postgresql:
-  enabled: false
-
-metricbeat_module_redis:
-  enabled: false

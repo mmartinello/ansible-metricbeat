@@ -6,3 +6,10 @@
 - name: Install on Windows using Chocolatey
   ansible.builtin.include_tasks: install-Windows-Chocolatey.yml
   when: metricbeat_win_chocolatey
+
+- name: Ensure Metricbeat is started and enabled on boot.
+  ansible.windows.win_service:
+    name: metricbeat
+    state: started
+    start_mode: "{{ _metricbeat_win_start_mode }}"
+  when: ansible_os_family == "Windows"

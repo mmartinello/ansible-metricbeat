@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+# Metricbeat configuration for module: {{ module_name }}
+
+{%- for item in module_config %}
+{%- if item.module is not defined %}
+{% set item = {'module': module_name} | combine(item) %}
+{% endif -%}
+- {{ item | to_nice_yaml(sort_keys=false, indent=2) | indent(2) }}
+{% endfor %}

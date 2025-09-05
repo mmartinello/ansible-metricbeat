@@ -10,3 +10,11 @@
     name: metricbeat
     state: present
   notify: Restart Metricbeat
+
+# Service startup
+- name: Ensure Metricbeat is started and enabled on boot
+  ansible.builtin.service:
+    name: metricbeat
+    state: started
+    enabled: "{{ metricbeat_enable_on_boot }}"
+  when: ansible_system == "Linux"

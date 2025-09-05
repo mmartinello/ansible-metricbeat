@@ -1,26 +1,4 @@
 ---
-- name: Set modules default configuration on Linux
-  ansible.builtin.set_fact:
-    metricbeat_modules_default_config: "{{ metricbeat_modules_default_config | combine(metricbeat_additional_default_config) }}"
-  when: ansible_system == "Linux"
-
-- name: Set modules default configuration on Windows
-  ansible.builtin.set_fact:
-    metricbeat_modules_default_config: "{{ metricbeat_modules_default_config | combine(metricbeat_win_additional_default_config) }}"
-  when: ansible_os_family == "Windows"
-
-- name: Set modules config from configured variable
-  ansible.builtin.set_fact:
-    metricbeat_modules_config: "{{ metricbeat_modules_config | combine({item: lookup('vars', 'metricbeat_module_' + item).config}) }}"
-  loop: "{{ metricbeat_supported_modules }}"
-  when: lookup('vars', 'metricbeat_module_' + item).enabled and lookup('vars', 'metricbeat_module_' + item).config is defined
-
-- name: Set modules config from default variable if not configured
-  ansible.builtin.set_fact:
-    metricbeat_modules_config: "{{ metricbeat_modules_config | combine({item: metricbeat_modules_default_config[item]}) }}"
-  loop: "{{ metricbeat_supported_modules }}"
-  when: lookup('vars', 'metricbeat_module_' + item).enabled and lookup('vars', 'metricbeat_module_' + item).config is not defined
-
 - name: Configure modules on Linux
   ansible.builtin.include_tasks: configure-modules-Linux.yml
   when: ansible_system == "Linux"
