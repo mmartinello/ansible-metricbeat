@@ -1,24 +1,27 @@
 # {{ ansible_managed }}
 
-# Metricbeat configuration for module: system
-
+# Metricbeat configuration for module: system on {{ ansible_system }}
 
 - module: system
   period: 10s
   metricsets:
   - cpu
+{% if ansible_system == "Linux" %}
   - load
+{% endif %}
   - memory
   - network
   - process
   - process_summary
   - socket_summary
+{%- if ansible_system == "Linux" %}
   - entropy
   - core
   - diskio
   - socket
   - service
   - users
+{%- endif %}
   process.include_top_n:
     by_cpu: 5
     by_memory: 5
@@ -32,7 +35,9 @@
   - drop_event.when.regexp:
       system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib|snap)($|/)'
 
+{%- if ansible_system == "Linux" %}
 - module: system
   period: 15m
   metricsets:
   - uptime
+{%- endif %}

@@ -58,7 +58,7 @@
     msg: "The script install-service-metricbeat.ps1 does not exist in {{ win_conf_path }}, cannot continue!"
   when: not metricbeat_script.stat.exists
 
-- name: Ensure Metricbeat is started and enabled on boot.
+- name: Ensure Metricbeat is started and enabled on boot
   ansible.windows.win_service:
     name: metricbeat
     state: started
