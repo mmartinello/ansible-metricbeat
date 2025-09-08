@@ -27,12 +27,15 @@
 
 - name: Show target version
   ansible.builtin.debug:
-    msg: "{{ pkg_name }} target version is {{ target_version }}, going to install it ..."
+    msg: >-
+      {{ pkg_name }} target version is {{ target_version }},
+      going to {{ 'reinstall' if metricbeat_reinstall else 'install' }} it ...
 
 - name: "Install Metricbeat using Chocolatey, version: {{ target_version }}"
   chocolatey.chocolatey.win_chocolatey:
     name: "{{ pkg_name }}"
     version: "{{ target_version }}"
+    state: "{{ package_state | default('present') }}"
   notify: Restart Metricbeat on Windows
 
 - name: Set Metricbeat path variables
@@ -62,5 +65,5 @@
   ansible.windows.win_service:
     name: metricbeat
     state: started
-    start_mode: "{{ _metricbeat_win_start_mode }}"
+    start_mode: "{{ start_mode }}"
   when: ansible_os_family == "Windows"

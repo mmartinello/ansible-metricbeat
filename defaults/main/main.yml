@@ -2,6 +2,9 @@
 # Metricbeat major version to be installed
 metricbeat_major_version: 8
 
+# Reinstall service if already installed
+metricbeat_reinstall: false
+
 # Enable Metricbeat starting on boot
 metricbeat_enable_on_boot: true
 
