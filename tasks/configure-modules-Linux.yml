@@ -11,10 +11,9 @@
     src: "{{ metricbeat_modules_path }}/{{ item }}.yml.disabled"
     dest: "{{ metricbeat_modules_path }}/{{ item }}.yml"
     mode: '0644'
+    owner: root
+    group: root
   loop: "{{ metricbeat_modules_enabled }}"
-  user: root
-  group: root
-  mode: '0644'
   notify: Restart Metricbeat
 
 - name: Configure modules with custom configuration
@@ -22,13 +21,12 @@
     src: "templates/module.yml.j2"
     dest: "{{ metricbeat_modules_path }}/{{ item }}.yml"
     mode: '0644'
+    owner: root
+    group: root
   vars:
     module_name: "{{ item }}"
     module_config: "{{ metricbeat_modules_config[item] }}"
   loop: "{{ metricbeat_modules_enabled }}"
-  user: root
-  group: root
-  mode: '0644'
   notify: Restart Metricbeat
 
 - name: Enable the system module when not explicitly disabled
@@ -36,8 +34,7 @@
     src: "templates/module-system.yml.j2"
     dest: "{{ metricbeat_modules_path }}/system.yml"
     mode: '0644'
-  user: root
-  group: root
-  mode: '0644'
+    owner: root
+    group: root
   notify: Restart Metricbeat
   when: "'system' not in metricbeat_modules_disabled"
