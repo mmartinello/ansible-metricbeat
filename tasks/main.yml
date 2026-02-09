@@ -30,3 +30,8 @@
 - name: Configure Metricbeat modules
   ansible.builtin.include_tasks: configure-modules.yml
   tags: ['configure', 'modules']
+
+# Manage service
+- name: Manage Metricbeat service
+  ansible.builtin.include_tasks: service.yml
+  tags: ['service']

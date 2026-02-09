@@ -1,0 +1,8 @@
+---
+- name: Manage service on Linux
+  ansible.builtin.include_tasks: service-Linux.yml
+  when: ansible_system == "Linux"
+
+- name: Manage service on Windows
+  ansible.builtin.include_tasks: service-Windows.yml
+  when: ansible_os_family == "Windows"

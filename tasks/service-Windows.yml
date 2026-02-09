@@ -1,0 +1,7 @@
+---
+- name: Ensure Metricbeat is started and enabled on boot
+  ansible.windows.win_service:
+    name: metricbeat
+    state: started
+    start_mode: "{{ start_mode }}"
+  when: ansible_os_family == "Windows"
