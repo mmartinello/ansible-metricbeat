@@ -25,12 +25,6 @@
       Output: {{ choco_list.stdout | default('') }}
   when: target_version is not defined
 
-- name: Show target version
-  ansible.builtin.debug:
-    msg: >-
-      {{ pkg_name }} target version is {{ target_version }},
-      going to {{ 'reinstall' if metricbeat_reinstall else 'install' }} it ...
-
 - name: "Install Metricbeat using Chocolatey, version: {{ target_version }}"
   chocolatey.chocolatey.win_chocolatey:
     name: "{{ pkg_name }}"
@@ -42,10 +36,6 @@
   ansible.builtin.set_fact:
     win_conf_path: "C:\\Program\ Files\\Elastic\\Beats\\{{ target_version }}\\metricbeat"
     win_modules_path: "C:\\Program\ Files\\Elastic/Beats\\{{ target_version }}\\metricbeat/modules.d"
-
-- name: Debug win_conf_path
-  ansible.builtin.debug:
-    var: win_conf_path
 
 - name: Check if install-service-metricbeat.ps1 exists
   ansible.windows.win_stat:
