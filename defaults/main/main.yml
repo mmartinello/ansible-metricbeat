@@ -2,8 +2,15 @@
 # Metricbeat major version to be installed
 metricbeat_major_version: 8
 
+# Metricbeat version to be installed
+# If not set, the latest stable version will be searched and installed
+metricbeat_version: null
+
 # Reinstall service if already installed
 metricbeat_reinstall: false
+
+# Upgrade service if already installed (alias for metricbeat_reinstall)
+metricbeat_upgrade: false
 
 # Enable Metricbeat starting on boot
 metricbeat_enable_on_boot: true
@@ -48,3 +55,9 @@ metricbeat_modules_disabled: []
 
 # Modules configuration
 metricbeat_modules_config: {}
+
+# MSI download URL
+metricbeat_msi_download_url: "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-{{ metricbeat_version }}-windows-x86_64.msi"
+
+# Metricbeat service name
+metricbeat_service_name: metricbeat

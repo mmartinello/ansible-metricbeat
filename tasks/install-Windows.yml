@@ -1,52 +1,23 @@
 ---
-- name: Set metricbeat package name
+- name: Get Metricbeat version
+  ansible.builtin.include_tasks: install-get-version.yml
+  when: not metricbeat_version | default(false)
+
+- name: Set Metricbeat variables
   ansible.builtin.set_fact:
-    pkg_name: metricbeat-oss
+    _metricbeat_msi_download_url: "{{ metricbeat_msi_download_url.replace('{{ metricbeat_version }}', metricbeat_version) }}"
+    _metricbeat_win_conf_path: "C:\\Program\ Files\\Elastic\\Beats\\{{ metricbeat_version }}\\metricbeat"
+    _metricbeat_win_modules_path: "C:\\Program\ Files\\Elastic/Beats\\{{ metricbeat_version }}\\metricbeat/modules.d"
 
-- name: Get all available versions from Chocolatey
-  ansible.windows.win_command: choco search {{ pkg_name }} --exact --all-versions --limit-output
-  register: choco_list
-  changed_when: false
+- name: Check if Metricbeat service exists
+  ansible.windows.win_service_info:
+    name: metricbeat
+  register: metricbeat_service
+  failed_when: false
 
-- name: Parse versions and pick latest major version {{ metricbeat_major_version }}
-  vars:
-    # Da "metricbeat-oss|8.13.4" → "8.13.4"
-    all_versions: "{{ choco_list.stdout_lines | map('regex_replace', '^.*\\|', '') | list }}"
-    # Tieni solo quelle della major richiesta (es. ^8\.)
-    major_regex: "^{{ metricbeat_major_version }}\\."
-    only_major: "{{ all_versions | select('search', major_regex) | list }}"
-  ansible.builtin.set_fact:
-    target_version: "{{ (only_major | community.general.version_sort) | last | default(omit) }}"
-
-- name: Fail if no versions were found under major version {{ metricbeat_major_version }}
-  ansible.builtin.fail:
-    msg: >-
-      No versions under major version {{ metricbeat_major_version }} of {{ pkg_name }} found on Chocolatey.
-      Output: {{ choco_list.stdout | default('') }}
-  when: target_version is not defined
-
-- name: "Install Metricbeat using Chocolatey, version: {{ target_version }}"
-  chocolatey.chocolatey.win_chocolatey:
-    name: "{{ pkg_name }}"
-    version: "{{ target_version }}"
-    state: "{{ package_state | default('present') }}"
+- name: Install Metricbeat on Windows
+  ansible.windows.win_package:
+    path: "{{ _metricbeat_msi_download_url }}"
+    arguments: /qn /norestart
+  when: metricbeat_service.services | length == 0 or metricbeat_reinstall or metricbeat_upgrade
   notify: Restart Metricbeat on Windows
-
-- name: Set Metricbeat path variables
-  ansible.builtin.set_fact:
-    win_conf_path: "C:\\Program\ Files\\Elastic\\Beats\\{{ target_version }}\\metricbeat"
-    win_modules_path: "C:\\Program\ Files\\Elastic/Beats\\{{ target_version }}\\metricbeat/modules.d"
-
-- name: Check if install-service-metricbeat.ps1 exists
-  ansible.windows.win_stat:
-    path: "{{ win_conf_path }}\\install-service-metricbeat.ps1"
-  register: metricbeat_script
-
-- name: Install Metricbeat service
-  ansible.windows.win_shell: '"{{ win_conf_path }}\\install-service-metricbeat.ps1"'
-  when: metricbeat_script.stat.exists
-
-- name: Fail if install-service-metricbeat.ps1 does not exist
-  ansible.builtin.fail:
-    msg: "The script install-service-metricbeat.ps1 does not exist in {{ win_conf_path }}, cannot continue!"
-  when: not metricbeat_script.stat.exists
