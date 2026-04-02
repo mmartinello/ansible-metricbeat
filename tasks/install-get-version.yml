@@ -58,14 +58,59 @@
 
 - name: Build numeric tuples for sorting (x.y.z)
   ansible.builtin.set_fact:
-    metricbeat_versions_tuples: "{{ metricbeat_versions_tuples + [{'v': item, 'k': (item.split('.') | map('int') | list)}] }}"
+    metricbeat_versions_tuples: >-
+      {{
+        metricbeat_versions_tuples
+        + [{'v': item, 'k': (item.split('.') | map('int') | list)}]
+      }}
   loop: "{{ metricbeat_versions_filtered }}"
   delegate_to: localhost
   run_once: true
 
-- name: Sort and select the latest version
+- name: Sort versions descending
   ansible.builtin.set_fact:
-    metricbeat_version_resolved: "{{ (metricbeat_versions_tuples | sort(attribute='k') | last).v }}"
+    metricbeat_versions_sorted_desc: >-
+      {{
+        (metricbeat_versions_tuples | sort(attribute='k') | map(attribute='v') | list) | reverse
+      }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Check Windows MSI availability for each version
+  ansible.builtin.uri:
+    url: "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-{{ item }}-windows-x86_64.msi"
+    method: HEAD
+    follow_redirects: all
+    status_code: [200, 301, 302]
+    timeout: 15
+  loop: "{{ metricbeat_versions_sorted_desc }}"
+  register: metricbeat_windows_msi_checks
+  failed_when: false
+  delegate_to: localhost
+  run_once: true
+
+- name: Resolve first available Windows version
+  ansible.builtin.set_fact:
+    metricbeat_version_resolved: >-
+      {{
+        (
+          metricbeat_windows_msi_checks.results
+          | selectattr('status', 'defined')
+          | selectattr('status', 'in', [200, 301, 302])
+          | map(attribute='item')
+          | list
+          | first
+        )
+      }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Fail if no Windows MSI is available for the requested major
+  ansible.builtin.fail:
+    msg: >-
+      No Windows MSI available for major {{ metricbeat_major_version_int }}.
+      Checked versions: {{ metricbeat_versions_sorted_desc }}
+  when: metricbeat_version_resolved is not defined or not metricbeat_version_resolved
   delegate_to: localhost
   run_once: true
 
