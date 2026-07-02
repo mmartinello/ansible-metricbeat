@@ -1,11 +1,38 @@
 ---
-- name: Get Metricbeat version
+- name: Check if Metricbeat is already installed
+  when: not metricbeat_reinstall and not metricbeat_upgrade
+  block:
+    - name: Check if Metricbeat service exists
+      ansible.windows.win_service_info:
+        name: metricbeat
+      register: metricbeat_service
+      failed_when: false
+
+    - name: Debug metricbeat_service
+      ansible.builtin.debug:
+        msg: "Metricbeat service variable: {{ metricbeat_service }}"
+
+    - name: Extract installed Metricbeat version
+      ansible.builtin.set_fact:
+        metricbeat_version: >-
+          {{
+            metricbeat_service.services[0].path
+            | regex_findall('[0-9]+\\.[0-9]+\\.[0-9]+')
+            | first
+          }}
+      when:
+        - metricbeat_service.exists
+        - metricbeat_service.services | length > 0
+
+- name: Get latest Metricbeat version from available versions from Elastic repository
   ansible.builtin.include_tasks: install-get-version.yml
   vars:
     elastic_service_name: metricbeat
     elastic_major_version: "{{ metricbeat_major_version }}"
     elastic_version_var_name: metricbeat_version
-  when: not metricbeat_version | default(false)
+  when:
+    - not metricbeat_service.exists
+    - not metricbeat_version | default(false)
 
 - name: Set Metricbeat variables
   ansible.builtin.set_fact:
@@ -13,19 +40,21 @@
     _metricbeat_win_conf_path: "C:\\Program Files\\Elastic\\Beats\\{{ metricbeat_version }}\\metricbeat"
     _metricbeat_win_modules_path: "C:\\Program Files\\Elastic\\Beats\\{{ metricbeat_version }}\\metricbeat\\modules.d"
 
-- name: Check if Metricbeat service exists
-  ansible.windows.win_service_info:
-    name: metricbeat
-  register: metricbeat_service
-  failed_when: false
-
-- name: Starting Metricbeat installation ...
+- name: Debug Metricbeat variables
   ansible.builtin.debug:
-    msg: "Downloading Metricbeat version {{ metricbeat_version }} MSI from {{ _metricbeat_msi_download_url }} ..."
+    msg: "Metricbeat variables: metricbeat_version: {{ metricbeat_version }}, msi_download_url: {{ _metricbeat_msi_download_url }}, win_conf_path: {{ _metricbeat_win_conf_path }}, win_modules_path: {{ _metricbeat_win_modules_path }}"
+
+- meta: end_play
 
 - name: Install Metricbeat on Windows
-  ansible.windows.win_package:
-    path: "{{ _metricbeat_msi_download_url }}"
-    arguments: /qn /norestart
-  when: metricbeat_service.services | length == 0 or metricbeat_reinstall or metricbeat_upgrade
-  notify: Restart Metricbeat on Windows
+  when: not metricbeat_service.exists or metricbeat_reinstall or metricbeat_upgrade
+  block:
+    - name: Starting Metricbeat installation ...
+      ansible.builtin.debug:
+        msg: "Downloading Metricbeat version {{ metricbeat_version }} MSI from {{ _metricbeat_msi_download_url }} ..."
+
+    - name: Install Metricbeat on Windows
+      ansible.windows.win_package:
+        path: "{{ _metricbeat_msi_download_url }}"
+        arguments: /qn /norestart
+      notify: Restart Metricbeat on Windows
