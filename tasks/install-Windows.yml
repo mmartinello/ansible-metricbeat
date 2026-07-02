@@ -1,6 +1,10 @@
 ---
 - name: Get Metricbeat version
   ansible.builtin.include_tasks: install-get-version.yml
+  vars:
+    elastic_service_name: metricbeat
+    elastic_major_version: "{{ metricbeat_major_version }}"
+    elastic_version_var_name: metricbeat_version
   when: not metricbeat_version | default(false)
 
 - name: Set Metricbeat variables
