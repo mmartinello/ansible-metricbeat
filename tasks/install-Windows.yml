@@ -1,38 +1,52 @@
 ---
-- name: Check if Metricbeat is already installed
+- name: Check if Metricbeat service exists
   when: not metricbeat_reinstall and not metricbeat_upgrade
   block:
-    - name: Check if Metricbeat service exists
+    - name: Get Metricbeat service information
       ansible.windows.win_service_info:
         name: metricbeat
       register: metricbeat_service
       failed_when: false
 
-    - name: Debug metricbeat_service
-      ansible.builtin.debug:
-        msg: "Metricbeat service variable: {{ metricbeat_service }}"
-
     - name: Extract installed Metricbeat version
       ansible.builtin.set_fact:
-        metricbeat_version: >-
-          {{
-            metricbeat_service.services[0].path
-            | regex_findall('[0-9]+\\.[0-9]+\\.[0-9]+')
-            | first
-          }}
+        metricbeat_installed_version: "{{ metricbeat_service.services[0].path | regex_search('[0-9]+\\.[0-9]+\\.[0-9]+') }}"
       when:
         - metricbeat_service.exists
         - metricbeat_service.services | length > 0
+        - not metricbeat_reinstall
+        - not metricbeat_upgrade
+        - (metricbeat_service.services[0].path | regex_search('[0-9]+\\.[0-9]+\\.[0-9]+')) is not none
 
 - name: Get latest Metricbeat version from available versions from Elastic repository
   ansible.builtin.include_tasks: install-get-version.yml
   vars:
     elastic_service_name: metricbeat
     elastic_major_version: "{{ metricbeat_major_version }}"
-    elastic_version_var_name: metricbeat_version
+    elastic_version_var_name: metricbeat_latest_version
   when:
-    - not metricbeat_service.exists
-    - not metricbeat_version | default(false)
+    - metricbeat_reinstall or metricbeat_upgrade or (not metricbeat_service.exists and not metricbeat_version | default(false))
+
+- name: Debug metricbeat_service
+  ansible.builtin.debug:
+    msg: "Metricbeat service variable: {{ metricbeat_service }}"
+
+- name: Get Metricbeat version from installed version
+  ansible.builtin.set_fact:
+    metricbeat_version: "{{ metricbeat_installed_version }}"
+  when:
+    - metricbeat_service.exists | default(false)
+    - metricbeat_service.services | length > 0
+    - metricbeat_installed_version is defined
+    - not metricbeat_reinstall
+    - not metricbeat_upgrade
+
+- name: Get Metricbeat version from latest version
+  ansible.builtin.set_fact:
+    metricbeat_version: "{{ metricbeat_latest_version }}"
+  when:
+    - metricbeat_latest_version is defined
+    - not metricbeat_version | default(false) or metricbeat_reinstall or metricbeat_upgrade
 
 - name: Set Metricbeat variables
   ansible.builtin.set_fact:
@@ -43,8 +57,6 @@
 - name: Debug Metricbeat variables
   ansible.builtin.debug:
     msg: "Metricbeat variables: metricbeat_version: {{ metricbeat_version }}, msi_download_url: {{ _metricbeat_msi_download_url }}, win_conf_path: {{ _metricbeat_win_conf_path }}, win_modules_path: {{ _metricbeat_win_modules_path }}"
-
-- meta: end_play
 
 - name: Install Metricbeat on Windows
   when: not metricbeat_service.exists or metricbeat_reinstall or metricbeat_upgrade
